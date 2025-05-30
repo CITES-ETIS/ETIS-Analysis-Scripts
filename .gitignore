@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Folders to ignore
+Original Data/
+Processed Data/
+JAGS MCMC outputs/
+Figures/

@@ -1,0 +1,71 @@
+---
+title: "Rhat plots for model parameters"
+author: "Analysis: `r analysis_name`"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+```{r, echo=FALSE, fig.height=12, fig.width=10}
+setwd("..")
+for (k in 1:K){
+  filename <- paste0(k, "knot_", analysis_name)
+  
+  mod <- readRDS(paste0("JAGS MCMC outputs/", filename, ".rds"))
+  
+  print(filename)
+  
+  # a's: spline basis function coefficients
+  as <- grep("^[aA].*", mod$parameters, value = TRUE)
+  pltlist <- list()
+  for (pm in as){
+    plt <- Rhatplot(mod$Rhat[[pm]], title = pm)
+    pltlist[[pm]] <- plt
+  }
+  plot <- ggarrange(plotlist = pltlist , nrow = ceiling(length(as)/2), ncol = 2)
+  print(annotate_figure(plot, top = text_grob(filename)))
+  
+  # mu's
+  mus <- grep("^[mA].*", mod$parameters, value = TRUE)
+  pltlist <- list()
+  for (pm in mus){
+    plt <- Rhatplot(mod$Rhat[[pm]], title = pm)
+    pltlist[[pm]] <- plt
+  }
+  plot <- ggarrange(plotlist = pltlist, nrow = ceiling(length(as)/2), ncol = 2)
+  print(annotate_figure(plot, top = text_grob(filename)))
+  
+  # Omega.invs
+  Omega.invs <- grep("^[OA].*", mod$parameters, value = TRUE)
+  pltlist <- list()
+  for (pm in Omega.invs){
+    plt <- Rhatplot(mod$Rhat[[pm]], title = pm)
+    pltlist[[pm]] <- plt
+  }
+  plot <- ggarrange(plotlist = pltlist , nrow = ceiling(length(as)/2), ncol = 2)
+  print(annotate_figure(plot, top = text_grob(filename)))
+  
+  # other coefficients: b1, b2, g1, g2, 
+  covar_coeffs <- c("b1", "b2", "g1", "g2", "r.cont", "deviance", "pi")
+  pltlist <- list()
+  for (pm in covar_coeffs){
+    plt <- Rhatplot(mod$Rhat[[pm]], title = pm)
+    pltlist[[pm]] <- plt
+  }
+  plot <- ggarrange(plotlist = pltlist , ncol = 2, nrow=4)
+  print(annotate_figure(plot, top = text_grob(filename)))
+  
+  # lambda, theta, and phi
+  TI_parameters <- c("lambda", "theta", "phi")
+  pltlist <- list()
+  for (pm in TI_parameters){
+    plt <- Rhatplot(mod$Rhat[[pm]], title = pm)
+    pltlist[[pm]] <- plt
+  }
+  plot <- ggarrange(plotlist = pltlist , nrow = 3, ncol = 1)
+  print(annotate_figure(plot, top = text_grob(filename)))
+  
+  print(paste0(round(100*sum(mod$Rhat$lambda > 1.1)/length(mod$Rhat$lambda), 3), "% of lambda R.hats exceed 1.1"))
+  
+}
+```
