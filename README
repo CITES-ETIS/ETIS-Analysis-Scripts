@@ -1,0 +1,15 @@
+Scripts are divided into 3 parts. Each part can be run from its wrapper script:
+
+- 1-Data_Processing:
+  - Convert data csvs from the ETIS Online database into usable seizures data with trade route information
+  - Build weight models and perform Weight estimation for records with missing weights
+  - Calculate covariates for modelling seizure rate and reporting rate bias-adjustment
+
+- 2-Trend_Analysis:
+  - Fit Bayesian hierarchical trend models and perform model averaging
+  - Fit weight models and simulate weights for the Weight Index
+  - Plot Transaction Index and Weight Index
+
+- 3-Cluster_Analysis:
+  - Perform agglomerative hierarchical clustering on country-level variables
+  - Perfrom sensitivity analysis with respect to posterior uncertainty in clustering variables
