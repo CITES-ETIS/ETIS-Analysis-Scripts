@@ -43,7 +43,7 @@ dend.data <- dendro_data(dend.sorted)
 # Dendrogram plot
 dendrogram_plot <- ggplot(data = dend.data$segments) +
   geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
-  scale_y_continuous(limits = c(0, max(dendro_data$segments$yend)), expand = c(0, 0)) + 
+  scale_y_continuous(limits = c(0, max(dend.data$segments$yend)), expand = c(0, 0)) + 
   scale_x_continuous(limits = c(1-0.5,length(labels(dend.sorted))+0.5), expand = c(0, 0)) + 
   theme_minimal() +
   theme(
