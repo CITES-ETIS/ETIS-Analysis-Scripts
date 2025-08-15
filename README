@@ -1,3 +1,5 @@
+These analysis scripts were used to run the ETIS analysis presented to CITES CoP20.
+
 Scripts are divided into 3 parts. Each part can be run from its wrapper script:
 
 - 1-Data_Processing:
