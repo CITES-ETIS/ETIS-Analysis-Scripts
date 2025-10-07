@@ -1,4 +1,6 @@
-Scripts are divided into 3 parts. Each part can be run from its wrapper script:
+These scripts contain the code used to run the latest ETIS analysis.
+
+The scripts are divided into 3 stages. Each stage can be run from its wrapper script:
 
 - 1-Data_Processing:
   - Convert data csvs from the ETIS Online database into usable seizures data with trade route information
