@@ -27,13 +27,31 @@ ctry_year_covars <- seizures %>%
   mutate(total_seizures = replace_na(total_seizures, 0),
          total_ma_submitted = replace_na(total_ma_submitted, 0)) %>%
   rename(year = seizure_year, country = discovered_country_code)
-  
 
-# Get CITES reporting scores - from processed table created from CITES annual reports file
-CITESscores <- read_csv("Processed Data/CITESscores.csv")
 
+# Get CITES reporting scores from subsidiary data tables from ETIS Online
+subsidiary_data <- read_csv("Original Data/subsidiary_data.csv")
+subsidiary_datum_origins <- read_csv("Original Data/subsidiary_datum_origins.csv")
+CITES_rep_score_reports_id <- subsidiary_datum_origins$id[which(subsidiary_datum_origins$name == "CITES_reporting_score_reports")]
+CITES_rep_score_years_id <- subsidiary_datum_origins$id[which(subsidiary_datum_origins$name == "CITES_reporting_score_years")]
+
+CITES_rep_score_reports_df <- subsidiary_data %>%
+  filter(subsidiary_datum_origin_id == CITES_rep_score_reports_id) %>%
+  left_join(ids_and_codes, join_by(country_id == id)) %>%
+  rename(country_code = code, CITES_reports = value) %>%
+  select(-country_id, -id, -subsidiary_datum_origin_id)
+
+CITES_rep_score_years_df <- subsidiary_data %>%
+  filter(subsidiary_datum_origin_id == CITES_rep_score_years_id) %>%
+  left_join(ids_and_codes, join_by(country_id == id)) %>%
+  rename(country_code = code, CITES_years = value) %>%
+  select(-country_id, -id, -subsidiary_datum_origin_id)
+
+# Add columns to ctry_year_covars
 ctry_year_covars <- ctry_year_covars %>%
-  left_join(CITESscores, join_by(year, country))
+  left_join(CITES_rep_score_reports_df, join_by(year == year, country == country_code)) %>%
+  left_join(CITES_rep_score_years_df, join_by(year == year, country == country_code))
+
 
 
 # Calculate ETIS reporting score and CITES reporting score 
