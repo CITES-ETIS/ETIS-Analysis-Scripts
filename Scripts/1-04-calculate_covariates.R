@@ -108,7 +108,7 @@ LE_df <- LE_df %>%
                              filter(seizure_year == year & !is.na(destination_country_code)) %>%
                              distinct(seizure_id))) %>%
   # destination score for raw
-  mutate(dest.score.r = dest.num.r / dest.denom.r) %>%
+  mutate(dest.score.r = ifelse(dest.denom.r > 0, dest.num.r / dest.denom.r, 0)) %>%
   # numerator of destination score for worked
   mutate(dest.num.w = nrow(seizures %>%
                              filter(ivory_type == "worked") %>%
@@ -120,7 +120,7 @@ LE_df <- LE_df %>%
                                filter(seizure_year == year & !is.na(destination_country_code)) %>%
                                distinct(seizure_id))) %>%
   # destination score for worked
-  mutate(dest.score.w = dest.num.w / dest.denom.w) %>%
+  mutate(dest.score.w = ifelse(dest.denom.w > 0, dest.num.w / dest.denom.w, 0)) %>%
   # numerator of origin score for raw
   mutate(org.num.r = nrow(seizures %>%
                              filter(ivory_type == "raw") %>%
@@ -132,7 +132,7 @@ LE_df <- LE_df %>%
                                filter(seizure_year == year & !is.na(origin_country_code)) %>%
                                distinct(seizure_id))) %>%
   # origin score for raw
-  mutate(org.score.r = org.num.r / org.denom.r) %>%
+  mutate(org.score.r = ifelse(org.denom.r > 0, org.num.r / org.denom.r, 0)) %>%
   # numerator of origin score for worked
   mutate(org.num.w = nrow(seizures %>%
                             filter(ivory_type == "worked") %>%
@@ -144,7 +144,7 @@ LE_df <- LE_df %>%
                               filter(seizure_year == year & !is.na(origin_country_code)) %>%
                               distinct(seizure_id))) %>%
   # origin score for worked
-  mutate(org.score.w = org.num.w / org.denom.w) %>%
+  mutate(org.score.w = ifelse(org.denom.w > 0, org.num.w / org.denom.w, 0)) %>%
   # numerator of export score for raw
   mutate(exp.num.r = nrow(seizures %>%
                             filter(ivory_type == "raw") %>%
@@ -156,7 +156,7 @@ LE_df <- LE_df %>%
                               filter(seizure_year == year & (!is.na(export_1_country_code) | !is.na(export_1_country_code))) %>%
                               distinct(seizure_id))) %>%
   # export score for raw
-  mutate(exp.score.r = exp.num.r / exp.denom.r) %>%
+  mutate(exp.score.r = ifelse(exp.denom.r > 0, exp.num.r / exp.denom.r, 0)) %>%
   # numerator of export score for worked
   mutate(exp.num.w = nrow(seizures %>%
                             filter(ivory_type == "worked") %>%
@@ -168,7 +168,7 @@ LE_df <- LE_df %>%
                               filter(seizure_year == year & (!is.na(export_1_country_code) | !is.na(export_1_country_code))) %>%
                               distinct(seizure_id))) %>%
   # export score for worked
-  mutate(exp.score.w = exp.num.w / exp.denom.w) %>%
+  mutate(exp.score.w = ifelse(exp.denom.w > 0, exp.num.w / exp.denom.w, 0)) %>%
   # numerator of transit score for raw
   mutate(tra.num.r = nrow(seizures %>%
                             filter(ivory_type == "raw") %>%
@@ -180,7 +180,7 @@ LE_df <- LE_df %>%
                               filter(seizure_year == year & !is.na(transit_1_country_code)) %>%
                               distinct(seizure_id))) %>%
   # transit score for raw
-  mutate(tra.score.r = tra.num.r / tra.denom.r) %>%
+  mutate(tra.score.r = ifelse(tra.denom.r > 0, tra.num.r / tra.denom.r, 0)) %>%
   # numerator of transit score for worked
   mutate(tra.num.w = nrow(seizures %>%
                             filter(ivory_type == "worked") %>%
@@ -192,12 +192,12 @@ LE_df <- LE_df %>%
                               filter(seizure_year == year & !is.na(transit_1_country_code)) %>%
                               distinct(seizure_id))) %>%
   # transit score for worked
-  mutate(tra.score.w = tra.num.w / tra.denom.w) %>%
+  mutate(tra.score.w = ifelse(tra.denom.w > 0, tra.num.w / tra.denom.w, 0)) %>%
   # final destination, origin, export and transit scores
-  mutate(dest.score = mean(c(dest.score.r, dest.denom.w))) %>%
-  mutate(org.score = mean(c(org.score.r, org.denom.w))) %>%
-  mutate(exp.score = mean(c(exp.score.r, exp.denom.w))) %>%
-  mutate(tra.score = mean(c(tra.score.r, tra.denom.w))) %>%
+  mutate(dest.score = mean(c(dest.score.r, dest.score.w))) %>%
+  mutate(org.score = mean(c(org.score.r, org.score.w))) %>%
+  mutate(exp.score = mean(c(exp.score.r, exp.score.w))) %>%
+  mutate(tra.score = mean(c(tra.score.r, tra.score.w))) %>%
   mutate(nondest.score = mean(c(org.score, exp.score, tra.score)))
 
 # Generate LE1 (1-year lagged LE ratio) and TCI and remove other columns
