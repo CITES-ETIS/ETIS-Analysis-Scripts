@@ -153,7 +153,7 @@ LE_df <- LE_df %>%
   # denominator of export score for raw
   mutate(exp.denom.r = nrow(seizures %>%
                               filter(ivory_type == "raw") %>%
-                              filter(seizure_year == year & (!is.na(export_1_country_code) | !is.na(export_1_country_code))) %>%
+                              filter(seizure_year == year & (!is.na(export_1_country_code))) %>%
                               distinct(seizure_id))) %>%
   # export score for raw
   mutate(exp.score.r = ifelse(exp.denom.r > 0, exp.num.r / exp.denom.r, 0)) %>%
@@ -165,7 +165,7 @@ LE_df <- LE_df %>%
   # denominator of export score for worked
   mutate(exp.denom.w = nrow(seizures %>%
                               filter(ivory_type == "worked") %>%
-                              filter(seizure_year == year & (!is.na(export_1_country_code) | !is.na(export_1_country_code))) %>%
+                              filter(seizure_year == year & (!is.na(export_1_country_code))) %>%
                               distinct(seizure_id))) %>%
   # export score for worked
   mutate(exp.score.w = ifelse(exp.denom.w > 0, exp.num.w / exp.denom.w, 0)) %>%
